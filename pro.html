@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Animation</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+        #text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: blue;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="heartCanvas"></canvas>
+    <div id="text">If you leave this on delivered im crashing out<br>
+        You are so gorgeous my love.<br>I love everything about you
+    </div>
+
+    <script>
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        const textElement = document.getElementById('text');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let i = 0;  // Iterator for the animation
+
+        function heartA(k) {
+            return 15 * Math.sin(k) ** 3;
+        }
+
+        function heartB(k) {
+            return 12 * Math.cos(k) - 5 * Math.cos(2 * k) - 2 * Math.cos(3 * k) - Math.cos(4 * k);
+        }
+
+        function drawHeart() {
+            if (i >= 60000) {
+                return;  // Stop animation once the heart is fully drawn
+            }
+
+            const x = heartA(i / 100) * 20 + canvas.width / 2;
+            const y = -heartB(i / 100) * 20 + canvas.height / 2;
+
+            // Dynamic colors
+            const r = Math.abs(Math.sin(i / 300)) * 255;
+            const g = Math.abs(Math.sin(i / 200)) * 255;
+            const b = Math.abs(Math.sin(i / 100)) * 255;
+
+            ctx.strokeStyle = `rgb(${r},${g},${b})`;
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + 1, y + 1); // Tiny line for the dot effect
+            ctx.stroke();
+
+            i++;  // Increment iterator
+            requestAnimationFrame(drawHeart);  // Recursively call the draw function for animation
+        }
+
+        // Start the heart animation
+        drawHeart();
+
+        // Delay the appearance of the text by 5 seconds
+        setTimeout(() => {
+            textElement.style.opacity = 1;  // Fade in the text
+        }, 5000);  // 5000 milliseconds = 5 seconds
+    </script>
+</body>
+</html>
